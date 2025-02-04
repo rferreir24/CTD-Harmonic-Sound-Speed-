@@ -1,4 +1,4 @@
-# CTD-Harmonic-Sound-Speed
+**Harmonic Mean Sound Speed from Sound Velocity Profile**
 
 CTD (Conductivity, Temperature, and Depth) data is used to generate sound velocity profiles of the water column, ensuring accurate bathymetric measurements for multibeam sonar and other sonar systems.
 
