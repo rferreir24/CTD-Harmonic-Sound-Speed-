@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-
+file_path = '2024-09-19_23-12-12.svp'
 
 def plot_svp(svp_data):
     depths = [d[0] for d in svp_data]  # Extract depth
@@ -34,6 +34,9 @@ def plot_svp(svp_data):
     plt.show()
 
 
+'''
+This function processes the velocity profile and calculates the harmonic mean sound speed
+'''
 def read_svp_file(file_path):
     svp_data = []
 
@@ -53,41 +56,56 @@ def read_svp_file(file_path):
             parts = line.split()
             
             # Ensure we have two columns in the file (depth and velocity)
+            # Each entry in the file is considered to be a layer
             if len(parts) == 2:
                 depth = float(parts[0])
-                velocity = float(parts[1])
-                if (svp_data == []):
-                    delta_depth = float(depth)
-                    delta_time = depth / velocity
-                
-                else:
-                    last_element = svp_data[-1]
-                    delta_depth = depth - last_element[0]
-                    delta_time = delta_depth / velocity
 
+                # We assume for each layer that the velocity is constant i.e. There is no sound speed variation within the layer itself 
+                velocity = float(parts[1]) 
+
+                #if first entry/layer
+                if (svp_data == []):
+
+                     #Distance between layers (For first layer - it would just be the depth of that layer)
+                    delta_depth = float(depth)
+                    # The time it takes for the sound to propagate in that layer
+                    delta_time = depth / velocity 
+                
+                #For other entries/layers
+                #get the most recent layer data
+                #calculate the distance between the new layer and the previous layer
+                else:
+                    last_element = svp_data[-1] 
+                    delta_depth = depth - last_element[0]
+                    delta_time = delta_depth / velocity 
+
+
+                #Harmonic Mean Sound Speed 
                 sum_depth = delta_depth + sum_depth
                 sum_time = delta_time + sum_time
                 harmonic_sound_speed = (sum_depth/sum_time)
 
                     
-                
+                 
                 svp_data.append((depth, velocity,delta_depth, delta_time, harmonic_sound_speed))
     
     return svp_data, sum_depth, sum_time
 
-file_path = 'C:/Users/rlfer/Downloads/PSJ_CTD_Data/2024-09-19_23-12-12.svp'
+
+
 svp_data, sum_depth, sum_time = read_svp_file(file_path)
 
-# Output the SVP data
 
-for depth, velocity, delta_depth, delta_time, harmonic_sound_speed in svp_data:
+# Output the SVP data along with the changes in depth and time and the resulting harmonic sound speed
+'''for depth, velocity, delta_depth, delta_time, harmonic_sound_speed in svp_data:
     
     print(f"Depth: {depth} m, Velocity: {velocity} m/s, Delta Depth: {delta_depth}, Delta Time: {delta_time}, Harmonic Sound Speed : {harmonic_sound_speed} ")
 
-print(len(svp_data))
-print('Total change in depth (Final depth): ', sum_depth ) # total depth 
+#print(len(svp_data))'''
 
-print('Total time taken in each layer: ', sum_time)
+print('Total change in depth (Final depth): ', sum_depth ) 
+
+print('Total time taken in each layer: ', sum_time) 
 
 print('Harmonic Mean Sound Speed at the bottom of profile in (m/s) : ', (sum_depth/sum_time))
 
